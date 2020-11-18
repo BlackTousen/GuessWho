@@ -46,8 +46,10 @@ Facial Hair: {card.FacialHair}
                 Board = FilteredBoard(Board, pick, property, cpu);
                 totalClues--;
             }
-            Console.WriteLine("That's not who! You lose!");
-
+            if (totalClues == 0)
+            {
+                Console.WriteLine("That's not who! You lose!");
+            }
         }
         static string ChooseMode()
         {
