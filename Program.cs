@@ -38,7 +38,7 @@ Facial Hair: {card.FacialHair}
         static int Prompt()
         {
             int selection = 0;
-            while (selection < 1 || selection > 7)
+            while (selection < 1 || selection > 6)
             {
                 Console.WriteLine(@"Choose an attribute to inquire about:
                 1) Name
