@@ -2,18 +2,22 @@
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+
 namespace GuessWho
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Guess Who!");
+            Console.WriteLine("Guess Who?");
             Console.WriteLine("");
+            string mode = ChooseMode();
+            int totalClues = NumClues(mode);
             List<Card> Board = CardList();
             Card cpu = Board[new Random().Next(0, Board.Count)];
-            while (true)
+            while (totalClues > 0 || totalClues < 0)
             {
+
                 foreach (Card card in Board)
                 {
                     Console.WriteLine($@"Name: {card.Name}
@@ -24,6 +28,14 @@ Hair Color: {card.HairColor}
 Facial Hair: {card.FacialHair}
 ");
                 }
+                if (totalClues > 0)
+                {
+                    Console.WriteLine($"Remaining clues: {totalClues}");
+                }
+                if (totalClues == 1)
+                {
+                    Console.WriteLine("This is your last chance! Guess someone or you'll surely lose!");
+                }
                 int pick = Prompt();
                 string property = Guess(pick);
                 if (pick == 1 && property == cpu.Name.ToLower())
@@ -32,8 +44,40 @@ Facial Hair: {card.FacialHair}
                     break;
                 }
                 Board = FilteredBoard(Board, pick, property, cpu);
+                totalClues--;
             }
+            Console.WriteLine("That's not who! You lose!");
 
+        }
+        static string ChooseMode()
+        {
+            string mode = "";
+            while (mode != "easy" && mode != "medium" && mode != "hard" && mode != "cheat")
+            {
+                Console.Write("Please choose a difficulty setting (easy, medium, hard): ");
+                mode = Console.ReadLine();
+            }
+            return mode;
+        }
+        static int NumClues(string mode)
+        {
+            int numOfClues = 0;
+            switch (mode)
+            {
+                case "easy":
+                    numOfClues = 8;
+                    break;
+                case "medium":
+                    numOfClues = 6;
+                    break;
+                case "hard":
+                    numOfClues = 4;
+                    break;
+                case "cheat":
+                    numOfClues = -1;
+                    break;
+            }
+            return numOfClues;
         }
         static int Prompt()
         {
@@ -41,12 +85,12 @@ Facial Hair: {card.FacialHair}
             while (selection < 1 || selection > 6)
             {
                 Console.WriteLine(@"Choose an attribute to inquire about:
-                1) Name
-                2) Hat
-                3) Glasses
-                4) Eye Color
-                5) Hair Color
-                6) Facial Hair");
+1) Name
+2) Hat
+3) Glasses
+4) Eye Color
+5) Hair Color
+6) Facial Hair");
                 if (!int.TryParse(Console.ReadLine(), out selection))
                 {
                     Prompt();
@@ -140,16 +184,30 @@ Facial Hair: {card.FacialHair}
         static List<Card> CardList()
         {
             List<Card> list = new List<Card>() {
-                new Card("Rick", "Cap", "None", "Blue", "Blonde", "None"),
-                new Card("Brady", "Fedora", "Triangle", "Blue", "Blonde", "None"),
-                new Card("Mori", "Fedora", "Triangle", "Brown", "Red", "None"),
-                new Card("Hailey", "Cowboy", "None", "Brown", "Red", "None"),
-                new Card("Hanako", "None", "Square", "Blue", "Brown", "None"),
-                new Card("Marci", "Cap", "Circle", "Green", "Red", "None"),
-                new Card("CJ", "None", "None", "Brown", "Black", "None") ,
-                new Card("Joseph", "None", "Square", "Blue", "Brown", "Beard"),
-                new Card("Matt", "None", "Circle", "Brown", "Brown", "Beard"),
-                new Card("Joe", "Cowboy", "None", "Green", "Black", "Mustache")
+                new Card("Rick", "Cap", "None", "Blue", "Blonde", "Beard"),
+                new Card("Brady", "Fedora", "Triangle", "Brown", "Blonde", "Beard"),
+                new Card("Mori", "Fedora", "Triangle", "Blue", "Red", "Goatee"),
+                new Card("CJ", "Cap", "None", "Brown", "Black", "None") ,
+                new Card("Joseph", "None", "None", "Blue", "Red", "Beard"),
+                new Card("Matt", "None", "Triangle", "Brown", "Brown", "Beard"),
+                new Card("Joe", "Cowboy", "Square", "Green", "Brown", "Goatee"),
+                new Card("Faith", "None", "Circle", "Green", "Black", "None"),
+                new Card("Sam", "Fedora", "Square", "Blue", "Brown", "Mustache"),
+                new Card("Jerry", "Cowboy", "Square", "Brown", "Black", "Goatee"),
+                new Card("Terra", "Fedora", "None", "Green", "Blonde", "None"),
+                new Card("Tristan", "Cap", "Triangle", "Green", "Blonde", "Mustache"),
+                new Card("Austin", "Cowboy", "Circle", "Blue", "Black", "Mustache"),
+                new Card("Starkey", "Fedora", "Circle", "Blue", "Red", "None"),
+                new Card("Abdu", "Cowboy", "None", "Brown", "Black", "Beard"),
+                new Card("Travis", "None", "Circle", "Brown", "Brown", "Goatee"),
+                new Card("Lacey", "None", "Square", "Green", "Red", "None"),
+                new Card("Parker", "Cap", "Triangle", "Blue", "Blonde", "Goatee"),
+                new Card("Braxton", "Cap", "Circle", "Brown", "Brown", "Mustache"),
+                new Card("Ember", "Cowboy", "None", "Green", "Red", "Mustache"),
+                new Card("Adam", "Fedora", "Circle", "Green", "None", "Goatee"),
+                new Card("Rose", "Cap", "Square", "Brown", "None", "None"),
+                new Card("Erik", "None", "Square", "Blue", "None", "Beard"),
+                new Card("Sage", "Cowboy", "Triangle", "Green", "None", "Mustache")
             };
             return list;
         }
@@ -166,12 +224,12 @@ Facial Hair: {card.FacialHair}
         public string Gender { get; set; }
         public Card(string name, string hat, string glasses, string eyeColor, string hairColor, string facialHair)
         {
-            this.Name = name;
-            this.Hat = hat;
-            this.Glasses = glasses;
-            this.EyeColor = eyeColor;
-            this.HairColor = hairColor;
-            this.FacialHair = facialHair;
+            Name = name;
+            Hat = hat;
+            Glasses = glasses;
+            EyeColor = eyeColor;
+            HairColor = hairColor;
+            FacialHair = facialHair;
         }
     }
 }
