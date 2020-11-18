@@ -57,7 +57,7 @@ Facial Hair: {card.FacialHair}
             while (mode != "easy" && mode != "medium" && mode != "hard" && mode != "taco")
             {
                 Console.Write("Please choose a difficulty setting (easy, medium, hard): ");
-                mode = Console.ReadLine();
+                mode = Console.ReadLine().ToLower();
             }
             return mode;
         }
