@@ -9,20 +9,21 @@ namespace GuessWho
         static void Main(string[] args)
         {
             Console.WriteLine("Guess Who!");
+            Console.WriteLine("");
             List<Card> Board = CardList();
             Card cpu = Board[new Random().Next(0, Board.Count)];
             while (true)
             {
                 foreach (Card card in Board)
                 {
-                    Console.WriteLine($@"
-Name: {card.Name}
+                    Console.WriteLine($@"Name: {card.Name}
 Hat: {card.Hat}
 Glasses: {card.Glasses}
 Eye Color: {card.EyeColor}
 Hair Color: {card.HairColor}
 Facial Hair: {card.FacialHair}
-Gender: {card.Gender}");
+Gender: {card.Gender}
+");
                 }
                 int pick = Prompt();
                 string property = Guess(pick);
