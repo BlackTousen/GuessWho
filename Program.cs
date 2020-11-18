@@ -52,7 +52,7 @@ Facial Hair: {card.FacialHair}
         static string ChooseMode()
         {
             string mode = "";
-            while (mode != "easy" && mode != "medium" && mode != "hard" && mode != "cheat")
+            while (mode != "easy" && mode != "medium" && mode != "hard" && mode != "taco")
             {
                 Console.Write("Please choose a difficulty setting (easy, medium, hard): ");
                 mode = Console.ReadLine();
@@ -73,7 +73,7 @@ Facial Hair: {card.FacialHair}
                 case "hard":
                     numOfClues = 4;
                     break;
-                case "cheat":
+                case "taco":
                     numOfClues = -1;
                     break;
             }
