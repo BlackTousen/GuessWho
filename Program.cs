@@ -22,7 +22,6 @@ Glasses: {card.Glasses}
 Eye Color: {card.EyeColor}
 Hair Color: {card.HairColor}
 Facial Hair: {card.FacialHair}
-Gender: {card.Gender}
 ");
                 }
                 int pick = Prompt();
@@ -47,8 +46,7 @@ Gender: {card.Gender}
                 3) Glasses
                 4) Eye Color
                 5) Hair Color
-                6) Facial Hair
-                7) Gender");
+                6) Facial Hair");
                 if (!int.TryParse(Console.ReadLine(), out selection))
                 {
                     Prompt();
@@ -100,13 +98,6 @@ Gender: {card.Gender}
                         choice = Console.ReadLine().ToLower();
                     }
                     break;
-                case 7:
-                    while (choice != "male" && choice != "female")
-                    {
-                        Console.Write("What gender do you think they might be? (male, female) ");
-                        choice = Console.ReadLine().ToLower();
-                    }
-                    break;
             }
             return choice;
         }
@@ -133,9 +124,6 @@ Gender: {card.Gender}
                 case 6:
                     key = "FacialHair";
                     break;
-                case 7:
-                    key = "Gender";
-                    break;
                 default:
                     key = string.Empty;
                     break;
@@ -152,16 +140,16 @@ Gender: {card.Gender}
         static List<Card> CardList()
         {
             List<Card> list = new List<Card>() {
-                new Card("Rick", "Cap", "None", "Blue", "Blonde", "None", "Male"),
-                new Card("Brady", "Fedora", "Triangle", "Blue", "Blonde", "None", "Male"),
-                new Card("Mori", "Fedora", "Triangle", "Brown", "Red", "None", "Female"),
-                new Card("Hailey", "Cowboy", "None", "Brown", "Red", "None", "Female"),
-                new Card("Hanako", "None", "Square", "Blue", "Brown", "None", "Female"),
-                new Card("Marci", "Cap", "Circle", "Green", "Red", "None", "Female"),
-                new Card("CJ", "None", "None", "Brown", "Black", "None", "Female") ,
-                new Card("Joseph", "None", "Square", "Blue", "Brown", "Beard", "Male"),
-                new Card("Matt", "None", "Circle", "Brown", "Brown", "Beard", "Male"),
-                new Card("Joe", "Cowboy", "None", "Green", "Black", "Mustache", "Male")
+                new Card("Rick", "Cap", "None", "Blue", "Blonde", "None"),
+                new Card("Brady", "Fedora", "Triangle", "Blue", "Blonde", "None"),
+                new Card("Mori", "Fedora", "Triangle", "Brown", "Red", "None"),
+                new Card("Hailey", "Cowboy", "None", "Brown", "Red", "None"),
+                new Card("Hanako", "None", "Square", "Blue", "Brown", "None"),
+                new Card("Marci", "Cap", "Circle", "Green", "Red", "None"),
+                new Card("CJ", "None", "None", "Brown", "Black", "None") ,
+                new Card("Joseph", "None", "Square", "Blue", "Brown", "Beard"),
+                new Card("Matt", "None", "Circle", "Brown", "Brown", "Beard"),
+                new Card("Joe", "Cowboy", "None", "Green", "Black", "Mustache")
             };
             return list;
         }
@@ -176,7 +164,7 @@ Gender: {card.Gender}
         public string HairColor { get; set; }
         public string FacialHair { get; set; }
         public string Gender { get; set; }
-        public Card(string name, string hat, string glasses, string eyeColor, string hairColor, string facialHair, string gender)
+        public Card(string name, string hat, string glasses, string eyeColor, string hairColor, string facialHair)
         {
             this.Name = name;
             this.Hat = hat;
@@ -184,7 +172,6 @@ Gender: {card.Gender}
             this.EyeColor = eyeColor;
             this.HairColor = hairColor;
             this.FacialHair = facialHair;
-            this.Gender = gender;
         }
     }
 }
