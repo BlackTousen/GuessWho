@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections;
+using System.Linq;
+using System.Reflection;
 using System.Collections.Generic;
 namespace GuessWho
 {
@@ -8,29 +9,36 @@ namespace GuessWho
         static void Main(string[] args)
         {
             Console.WriteLine("Guess Who!");
+            Console.WriteLine("");
             List<Card> Board = CardList();
             Card cpu = Board[new Random().Next(0, Board.Count)];
             while (true)
             {
+                foreach (Card card in Board)
+                {
+                    Console.WriteLine($@"Name: {card.Name}
+Hat: {card.Hat}
+Glasses: {card.Glasses}
+Eye Color: {card.EyeColor}
+Hair Color: {card.HairColor}
+Facial Hair: {card.FacialHair}
+");
+                }
                 int pick = Prompt();
                 string property = Guess(pick);
-                if (pick == 1 && property == cpu.Attributes["Name"].ToLower())
+                if (pick == 1 && property == cpu.Name.ToLower())
                 {
                     Console.WriteLine("You did it! Great job!");
                     break;
                 }
                 Board = FilteredBoard(Board, pick, property, cpu);
-                foreach (Card card in Board)
-                {
-                    Console.WriteLine(card.Attributes["Name"]);
-                }
             }
 
         }
         static int Prompt()
         {
             int selection = 0;
-            while (selection < 1 || selection > 7)
+            while (selection < 1 || selection > 6)
             {
                 Console.WriteLine(@"Choose an attribute to inquire about:
                 1) Name
@@ -38,8 +46,7 @@ namespace GuessWho
                 3) Glasses
                 4) Eye Color
                 5) Hair Color
-                6) Facial Hair
-                7) Gender");
+                6) Facial Hair");
                 if (!int.TryParse(Console.ReadLine(), out selection))
                 {
                     Prompt();
@@ -66,7 +73,7 @@ namespace GuessWho
                 case 3:
                     while (choice != "circle" && choice != "square" && choice != "triangle" && choice != "none")
                     {
-                        Console.Write("What kind of glasses do you think they might have? (round, square, oval, none) ");
+                        Console.Write("What kind of glasses do you think they might have? (circle, square, triangle, none) ");
                         choice = Console.ReadLine().ToLower();
                     }
                     break;
@@ -91,19 +98,12 @@ namespace GuessWho
                         choice = Console.ReadLine().ToLower();
                     }
                     break;
-                case 7:
-                    while (choice != "male" && choice != "female")
-                    {
-                        Console.Write("What gender do you think they might be? (male, female) ");
-                        choice = Console.ReadLine().ToLower();
-                    }
-                    break;
             }
             return choice;
         }
         static List<Card> FilteredBoard(List<Card> board, int pick, string property, Card cpu)
         {
-            string key = "";
+            string key;
             switch (pick)
             {
                 case 1:
@@ -124,44 +124,54 @@ namespace GuessWho
                 case 6:
                     key = "FacialHair";
                     break;
-                case 7:
-                    key = "Gender";
+                default:
+                    key = string.Empty;
                     break;
 
             }
-            if (cpu.Attributes[key].ToLower() == property)
+            var test = cpu.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == key);
+            var value = (test.GetValue(cpu)?.ToString() ?? string.Empty).ToLower();
+            if (value == property)
             {
-                List<Card> filtered = board.FindAll(card => card.Attributes[key].ToLower() == property);
-                return filtered;
+                return board.Where(card => test.GetValue(card)?.ToString().ToLower() == property).ToList();
             }
-            else
-            {
-                List<Card> filtered = board.FindAll(card => card.Attributes[key].ToLower() != property);
-                return filtered;
-            }
+            return board.Where(card => test.GetValue(card)?.ToString().ToLower() != property).ToList();
         }
         static List<Card> CardList()
         {
             List<Card> list = new List<Card>() {
-                new Card("Rick", "Cap", "None", "Blue", "Blonde", "None", "Male"),
-                new Card("Mori", "Fedora", "Triangle", "Brown", "Red", "None", "Female"),
-                new Card("Joseph", "None", "Square", "Blue", "Brown", "Beard", "Male")
+                new Card("Rick", "Cap", "None", "Blue", "Blonde", "None"),
+                new Card("Brady", "Fedora", "Triangle", "Blue", "Blonde", "None"),
+                new Card("Mori", "Fedora", "Triangle", "Brown", "Red", "None"),
+                new Card("Hailey", "Cowboy", "None", "Brown", "Red", "None"),
+                new Card("Hanako", "None", "Square", "Blue", "Brown", "None"),
+                new Card("Marci", "Cap", "Circle", "Green", "Red", "None"),
+                new Card("CJ", "None", "None", "Brown", "Black", "None") ,
+                new Card("Joseph", "None", "Square", "Blue", "Brown", "Beard"),
+                new Card("Matt", "None", "Circle", "Brown", "Brown", "Beard"),
+                new Card("Joe", "Cowboy", "None", "Green", "Black", "Mustache")
             };
             return list;
         }
     }
     public class Card
     {
-        public Dictionary<string, string> Attributes = new Dictionary<string, string>();
-        public Card(string name, string hat, string glasses, string eyeColor, string hairColor, string facialHair, string gender)
+
+        public string Name { get; set; }
+        public string Hat { get; set; }
+        public string Glasses { get; set; }
+        public string EyeColor { get; set; }
+        public string HairColor { get; set; }
+        public string FacialHair { get; set; }
+        public string Gender { get; set; }
+        public Card(string name, string hat, string glasses, string eyeColor, string hairColor, string facialHair)
         {
-            Attributes.Add("Name", name);
-            Attributes.Add("Hat", hat);
-            Attributes.Add("Glasses", glasses);
-            Attributes.Add("EyeColor", eyeColor);
-            Attributes.Add("HairColor", hairColor);
-            Attributes.Add("FacialHair", facialHair);
-            Attributes.Add("Gender", gender);
+            this.Name = name;
+            this.Hat = hat;
+            this.Glasses = glasses;
+            this.EyeColor = eyeColor;
+            this.HairColor = hairColor;
+            this.FacialHair = facialHair;
         }
     }
 }
